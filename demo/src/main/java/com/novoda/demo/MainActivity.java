@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import com.novoda.noplayer.ContentType;
+import com.novoda.noplayer.Listeners;
 import com.novoda.noplayer.NoPlayer;
 import com.novoda.noplayer.PlayerBuilder;
 import com.novoda.noplayer.PlayerState;
@@ -41,6 +42,7 @@ public class MainActivity extends Activity {
         PlayerView playerView = (PlayerView) findViewById(R.id.player_view);
         View audioSelectionButton = findViewById(R.id.button_audio_selection);
         View subtitleSelectionButton = findViewById(R.id.button_subtitle_selection);
+        final ControllerView controllerView = (ControllerView) findViewById(R.id.controller_view);
 
         audioSelectionButton.setOnClickListener(showAudioSelectionDialog);
         subtitleSelectionButton.setOnClickListener(showSubtitleSelectionDialog);
@@ -52,10 +54,27 @@ public class MainActivity extends Activity {
                 .withDowngradedSecureDecoder()
                 .build(this);
 
-        player.getListeners().addPreparedListener(new NoPlayer.PreparedListener() {
+        Listeners playerListeners = player.getListeners();
+        playerListeners.addPreparedListener(new NoPlayer.PreparedListener() {
             @Override
             public void onPrepared(PlayerState playerState) {
                 player.play();
+            }
+        });
+        playerListeners.addStateChangedListener(new NoPlayer.StateChangedListener() {
+            @Override
+            public void onVideoPlaying() {
+                controllerView.setPlaying();
+            }
+
+            @Override
+            public void onVideoPaused() {
+                controllerView.setPaused();
+            }
+
+            @Override
+            public void onVideoStopped() {
+
             }
         });
 
