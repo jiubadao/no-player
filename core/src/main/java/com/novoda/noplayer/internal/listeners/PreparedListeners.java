@@ -26,7 +26,7 @@ class PreparedListeners implements NoPlayer.PreparedListener {
 
     @Override
     public void onPrepared(PlayerState playerState) {
-        if (!hasPrepared) {
+        if (hasNotPreviouslyPrepared()) {
             hasPrepared = true;
             for (NoPlayer.PreparedListener listener : listeners) {
                 listener.onPrepared(playerState);
@@ -36,5 +36,9 @@ class PreparedListeners implements NoPlayer.PreparedListener {
 
     void resetPreparedState() {
         hasPrepared = false;
+    }
+
+    private boolean hasNotPreviouslyPrepared() {
+        return !hasPrepared;
     }
 }
